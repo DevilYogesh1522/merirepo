@@ -14,7 +14,7 @@ train_data="mnist-jpg/train"
 test_data="mnist-jpg/test"
 
 
-image_generator=ImageDataGenerator(rescale=0.1/255)
+image_generator=ImageDataGenerator(rescale=1.0/255)
 train_batch=10000
 test_batch=5000
 
