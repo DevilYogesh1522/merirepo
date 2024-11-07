@@ -48,7 +48,7 @@ print(y_test.shape)
 from tensorflow.keras.layers import Input
 model=keras.Sequential([
     Input(shape=(28,28)),
-    keras.layers.Flatten(input_shape=(28,28)),
+    keras.layers.Flatten(),
     keras.layers.Dense(128,activation="relu"),
     keras.layers.Dense(10,activation="softmax")
     
