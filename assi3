@@ -4,6 +4,8 @@ a. Loading and preprocessing the image data
 b. Defining the model’s architecture
 c. Training the model
 d. Estimating the model’s performance
+
+
 **************** Import necessary pacakges***************
 import numpy as np
 import pandas as pd
@@ -14,28 +16,42 @@ from sklearn.metrics import accuracy_score
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Flatten, Conv2D, Dense, MaxPooling2D
 from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.utils import to_categorical
-from tensorflow.keras.datasets import mnist
+
+
 *********Loading and preprocessing the image data**********
-(X_train, y_train), (X_test, y_test) = mnist.load_data()
-print(X_train.shape)
-X_train[0].min(), X_train[0].max()
-X_train = (X_train - 0.0) / (255.0 - 0.0)
-X_test = (X_test - 0.0) / (255.0 - 0.0)
-X_train[0].min(), X_train[0].max()
-def plot_digit(image, digit, plt, i):
- plt.subplot(4, 5, i + 1)
- plt.imshow(image, cmap=plt.get_cmap('gray'))
- plt.title(f"Digit: {digit}")
- plt.xticks([])
- plt.yticks([])
-plt.figure(figsize=(16, 10))
-for i in range(20):
- plot_digit(X_train[i], y_train[i], plt, i) 
-plt.show()
-X_train = X_train.reshape((X_train.shape + (1,)))
-X_test = X_test.reshape((X_test.shape + (1,)))
-y_train[0:20]
+train_data="mnist-jpg/train"
+test_data="mnist-jpg/test"
+
+image_generator= ImageDataGenerator(rescale=0.1/255)
+
+
+
+training_data=image_generator.flow_from_directory(
+train_data,
+target_size=(28,28),
+batch_size=train_batch,
+class_mode="categorical",
+color_mode="grayscale"
+
+)
+
+
+testing_data=image_generator.flow_from_directory(
+test_data,
+target_size=(28,28),
+batch_size=test_batch,
+class_mode="categorical",
+color_mode="grayscale"
+
+)
+
+
+
+
+x_train,y_train=training_data[0]
+x_test,y_test=testing_data[0]
+
+
 **************Defining the model’s architecture*********************
 model = Sequential([
  Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)),
@@ -44,15 +60,25 @@ model = Sequential([
  Dense(100, activation="relu"),
  Dense(10, activation="softmax")
 ])
+
 optimizer = SGD(learning_rate=0.01, momentum=0.9)
 model.compile(
  optimizer=optimizer, 
- loss="sparse_categorical_crossentropy", 
+ loss="categorical_crossentropy", 
  metrics=["accuracy"]
 )
 model.summary()
 model.fit(X_train, y_train, epochs=10, batch_size=32)
+
 ***************Training the model********************
+
+def plot_digit(image,digit,plt,i):
+    plt.subplot(4,5,i+1),
+    plt.imshow(image,cmap="gray"),
+    plt.title(f"pred={digit}"),
+    plt.axis("off")
+    
+    
 plt.figure(figsize=(16, 10))
 for i in range(20):
  image = random.choice(X_test).squeeze()
@@ -60,6 +86,7 @@ for i in range(20):
  plot_digit(image, digit, plt, i)
 plt.show()
 *****************Estimating the model’s performance************
+
 predictions = np.argmax(model.predict(X_test), axis=-1)
 accuracy_score(y_test, predictions)
 n=random.randint(0,9999)
@@ -70,4 +97,4 @@ print("Handwritten number in the image is= %d" %np.argmax(predicted_value[n]))
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test loss:', score[0]) #Test loss: 0.0296396646054
 print('Test accuracy:', score[1])
-Output
+
