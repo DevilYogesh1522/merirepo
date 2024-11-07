@@ -54,7 +54,8 @@ x_test,y_test=testing_data[0]
 
 **************Defining the model’s architecture*********************
 model = Sequential([
- Conv2D(32, (3, 3), activation="relu", input_shape=(28, 28, 1)),
+ Input(shape=(28,28)),
+ Conv2D(32, (3, 3), activation="relu"),
  MaxPooling2D((2, 2)),
  Flatten(),
  Dense(100, activation="relu"),
