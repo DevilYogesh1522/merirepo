@@ -73,19 +73,24 @@ model.fit(X_train, y_train, epochs=10, batch_size=32)
 
 ***************Training the model********************
 
-def plot_digit(image,digit,plt,i):
-    plt.subplot(4,5,i+1),
-    plt.imshow(image,cmap="gray"),
-    plt.title(f"pred={digit}"),
-    plt.axis("off")
-    
-    
-plt.figure(figsize=(16, 10))
+import matplotlib.pyplot as plt
+
+def plot_digit(image, digit, plt, i):
+    plt.subplot(4, 5, i + 1)    # Assuming you want a grid of 4x5 for 20 images
+    plt.imshow(image, cmap='gray')
+    plt.title(f"Pred: {digit}")
+    plt.axis('off')
+
+# Your main loop
 for i in range(20):
- image = random.choice(X_test).squeeze()
- digit = np.argmax(model.predict(image.reshape((1, 28, 28, 1)))[0], axis=-1)
- plot_digit(image, digit, plt, i)
+    index = random.choice(range(len(x_test)))
+    image = x_test[index].squeeze()
+    digit = np.argmax(model.predict(image.reshape(1, 28, 28, 1))[0], axis=-1)
+    plot_digit(image, digit, plt, i)
+
+plt.tight_layout()
 plt.show()
+
 *****************Estimating the model’s performance************
 
 predictions = np.argmax(model.predict(X_test), axis=-1)
